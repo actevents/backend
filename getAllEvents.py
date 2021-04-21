@@ -10,7 +10,7 @@ def lambda_handler(event, context):
         
         return {
             'statusCode': 200,
-            'body': items
+            'body': json.dumps(items)
         }
     except:
         print('Closing lambda function')
