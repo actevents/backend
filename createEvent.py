@@ -6,12 +6,14 @@ def lambda_handler(event, context):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('Events')
     acteventID = uuid.uuid4()
-    acteventName = event['name']
+    bodyStr = event["body"].replace("\\n", "")
+    body = json.loads(bodyStr)
+    acteventName = body['name']
     try:
         table.put_item(
             Item={
                 'id': str(acteventID), 
-                'name':acteventName 
+                'name': acteventName 
             }
         )
 
