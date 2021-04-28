@@ -2,6 +2,7 @@ from math import cos, asin, sqrt, pi
 import json
 import boto3
 
+#getAllEvents
 def lambda_handler(event, context):
     #get body out of event
     bodyStr = event["body"].replace("\\n", "")
@@ -13,7 +14,12 @@ def lambda_handler(event, context):
         lon = float(body['longitude'])
         lat = float(body['latitude'])
         radius = int(body['radius'])
-        
+    except:
+        return {
+            "statusCode": 400,
+            "body": json.dumps("Error: Could not get parameters.")
+        }
+    try:
         response = table.scan()
         all_items = response['Items']
         items = []
@@ -31,7 +37,7 @@ def lambda_handler(event, context):
         print('Closing lambda function')
         return {
             'statusCode': 400,
-            'body': json.dumps('Error getting all events from db')
+            'body': json.dumps('Error getting events from db in the given radius')
     } 
 
 def getDistance(lat1, lon1, lat2, lon2):
