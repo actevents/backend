@@ -1,0 +1,77 @@
+{
+  "resource": "/createEvent",
+  "path": "/createEvent",
+  "httpMethod": "POST",
+  "headers": {
+    "accept-encoding": "gzip, deflate",
+    "content-type": "application/json",
+    "Host": "n7t5qlvvq8.execute-api.eu-central-1.amazonaws.com",
+    "User-Agent": "vscode-restclient",
+    "X-Amzn-Trace-Id": "Root=1-60817f85-0f5b715f42532c7301b4afe0",
+    "X-Forwarded-For": "46.223.66.31",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+    "accept-encoding": [
+      "gzip, deflate"
+    ],
+    "content-type": [
+      "application/json"
+    ],
+    "Host": [
+      "n7t5qlvvq8.execute-api.eu-central-1.amazonaws.com"
+    ],
+    "User-Agent": [
+      "vscode-restclient"
+    ],
+    "X-Amzn-Trace-Id": [
+      "Root=1-60817f85-0f5b715f42532c7301b4afe0"
+    ],
+    "X-Forwarded-For": [
+      "46.223.66.31"
+    ],
+    "X-Forwarded-Port": [
+      "443"
+    ],
+    "X-Forwarded-Proto": [
+      "https"
+    ]
+  },
+  "queryStringParameters": "None",
+  "multiValueQueryStringParameters": "None",
+  "pathParameters": "None",
+  "stageVariables": "None",
+  "requestContext": {
+    "resourceId": "2kn77h",
+    "resourcePath": "/createEvent",
+    "httpMethod": "POST",
+    "extendedRequestId": "eMDc6EqeliAFRFg=",
+    "requestTime": "22/Apr/2021:13:52:05 +0000",
+    "path": "/default/createEvent",
+    "accountId": "401975092465",
+    "protocol": "HTTP/1.1",
+    "stage": "default",
+    "domainPrefix": "n7t5qlvvq8",
+    "requestTimeEpoch": 1619099525757,
+    "requestId": "2879085b-0299-408d-8898-6f9b27f77e3b",
+    "identity": {
+      "cognitoIdentityPoolId": "None",
+      "accountId": "None",
+      "cognitoIdentityId": "None",
+      "caller": "None",
+      "sourceIp": "46.223.66.31",
+      "principalOrgId": "None",
+      "accessKey": "None",
+      "cognitoAuthenticationType": "None",
+      "cognitoAuthenticationProvider": "None",
+      "userArn": "None",
+      "userAgent": "vscode-restclient",
+      "user": "None"
+    },
+    "domainName": "n7t5qlvvq8.execute-api.eu-central-1.amazonaws.com",
+    "apiId": "n7t5qlvvq8"
+  },
+  "body": "{\\n    \"name\": \"kein Plan was abgeht\",\\n\"longitude\": \"48.476245999999996\",\\n\"latitude\": \"8.4912597\"\\n}",
+  "isBase64Encoded": "False"
+}
