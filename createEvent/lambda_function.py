@@ -2,6 +2,7 @@ import json
 import boto3
 import uuid
 
+#createEvent
 def lambda_handler(event, context):
     #get body out of event
     bodyStr = event["body"].replace("\\n", "")
@@ -25,11 +26,17 @@ def lambda_handler(event, context):
 
         return {
             'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*'
+            },
             'body': json.dumps('Successfully created event!')
         }
     except:
         print('Closing lambda function')
         return {
             'statusCode': 400,
+            'headers': {
+                'Access-Control-Allow-Origin': '*'
+            },
             'body': json.dumps('Error saving the event')
         }

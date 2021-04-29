@@ -4,19 +4,30 @@ import boto3
 
 #getAllEvents
 def lambda_handler(event, context):
+    #return {
+    #    "body": json.dumps(event)
+    #    }
+    
     #get body out of event
-    bodyStr = event["body"].replace("\\n", "")
-    body = json.loads(bodyStr)
-
+    #bodyStr = event["body"].replace("\\n", "")
+    #body = json.loads(bodyStr)
+    tmp = event["queryStringParameters"]
+    
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('Events')
     try:
-        lon = float(body['longitude'])
-        lat = float(body['latitude'])
-        radius = int(body['radius'])
+        lon = float(tmp["longitude"])
+        lat = float(tmp["latitude"])
+        if "radius" in tmp:
+            radius =  int(tmp["radius"])
+        else:
+            radius = 15
     except:
         return {
             "statusCode": 400,
+            'headers': {
+                'Access-Control-Allow-Origin': '*'
+            },
             "body": json.dumps("Error: Could not get parameters.")
         }
     try:
@@ -25,18 +36,25 @@ def lambda_handler(event, context):
         items = []
         for item in all_items:
             distance = getDistance(lat,lon,float(item['latitude']),float(item['longitude']))
+            item.update({"distance": distance})
             if(distance<=radius):
-                items.append([item, distance])
+                items.append(item)
         
         items.sort(key=sortFunc)
         return {
             'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*'
+            },
             'body': json.dumps(items)
         }
     except:
         print('Closing lambda function')
         return {
             'statusCode': 400,
+            'headers': {
+                'Access-Control-Allow-Origin': '*'
+            },
             'body': json.dumps('Error getting events from db in the given radius')
     } 
 
@@ -46,4 +64,4 @@ def getDistance(lat1, lon1, lat2, lon2):
     return 12742 * asin(sqrt(a)) #2*R*asin...
 
 def sortFunc(e):
-    return e[1]
+    return e["distance"]
