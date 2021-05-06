@@ -3,17 +3,19 @@ import boto3
 
 #getEventID
 def lambda_handler(event, context):
-    #get body out of event
-    bodyStr = event["body"].replace("\\n", "")
-    body = json.loads(bodyStr)
+    #get parameters out of queryStringParameters
+    parameters = event["queryStringParameters"]
 
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('Events')
     try:
-        id = str(body['id'])
+        id = str(parameters['id'])
     except:
         return {
             "statusCode": 400,
+            'headers': {
+                'Access-Control-Allow-Origin': '*'
+            },
             "body": json.dumps("Error: Could not get id as parameter.")
         }
     try:
@@ -21,10 +23,16 @@ def lambda_handler(event, context):
         item = response['Item']
         return {
             'statusCode': 200,
-            'body': item
+            'headers': {
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps(item)
         }
-    except:
+    except Exception as inst:
         return {
             'statusCode': 400,
-            'body': json.dumps('Error: Error getting events by id')
+            'headers': {
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps('Error: Error getting events by id\n' + str(type(inst)) + '\n\n' + str(inst.args))
         }
