@@ -11,15 +11,15 @@ def lambda_handler(event, context):
     #get body out of event
     #bodyStr = event["body"].replace("\\n", "")
     #body = json.loads(bodyStr)
-    tmp = event["queryStringParameters"]
+    parameters = event["queryStringParameters"]
     
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('Events')
     try:
-        lon = float(tmp["longitude"])
-        lat = float(tmp["latitude"])
-        if "radius" in tmp:
-            radius =  int(tmp["radius"])
+        lon = float(parameters["longitude"])
+        lat = float(parameters["latitude"])
+        if "radius" in parameters:
+            radius =  int(parameters["radius"])
         else:
             radius = 15
     except:
