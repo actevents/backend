@@ -13,8 +13,8 @@ def lambda_handler(event, context):
     #body = json.loads(bodyStr)
     parameters = event["queryStringParameters"]
     
-    dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('Events')
+    dynamodb = boto3.resource("dynamodb")
+    table = dynamodb.Table("Events")
     try:
         lon = float(parameters["longitude"])
         lat = float(parameters["latitude"])
@@ -25,37 +25,40 @@ def lambda_handler(event, context):
     except:
         return {
             "statusCode": 400,
-            'headers': {
-                'Access-Control-Allow-Origin': '*'
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
             },
             "body": json.dumps("Error: Could not get parameters.")
         }
     try:
         response = table.scan()
-        all_items = response['Items']
+        all_items = response["Items"]
         items = []
         for item in all_items:
-            distance = getDistance(lat,lon,float(item['latitude']),float(item['longitude']))
+            try:
+                distance = getDistance(lat,lon,float(item["location"]["latitude"]),float(item["location"]["longitude"]))
+            except KeyError as inst: #to be downward compatible
+                distance = getDistance(lat,lon,float(item["latitude"]),float(item["longitude"]))
             item.update({"distance": distance})
             if(distance<=radius):
                 items.append(item)
         
         items.sort(key=sortFunc)
         return {
-            'statusCode': 200,
-            'headers': {
-                'Access-Control-Allow-Origin': '*'
+            "statusCode": 200,
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
             },
-            'body': json.dumps(items)
+            "body": json.dumps(items)
         }
-    except:
-        print('Closing lambda function')
+    except Exception as inst:
+        print("Closing lambda function")
         return {
-            'statusCode': 400,
-            'headers': {
-                'Access-Control-Allow-Origin': '*'
+            "statusCode": 400,
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
             },
-            'body': json.dumps('Error getting events from db in the given radius')
+            "body": json.dumps("Error getting events from db in the given radius\n\n" + str(type(inst)) + "\n\n" + str(inst.args))
     } 
 
 def getDistance(lat1, lon1, lat2, lon2):
