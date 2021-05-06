@@ -8,35 +8,51 @@ def lambda_handler(event, context):
     bodyStr = event["body"].replace("\\n", "")
     body = json.loads(bodyStr)
     
-    dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('Events')
-    acteventID = uuid.uuid4()
-    acteventName = body['name']
-    acteventLongitude = body['longitude']
-    acteventLatitude = body['latitude']
+    dynamodb = boto3.resource("dynamodb")
+    table = dynamodb.Table("Events")
+    id = uuid.uuid4()
+    name = body["name"]
+    description = body["description"]
+    price = body["price"]
+    locLatitude = body["location"]["longitude"]
+    locLongitude = body["location"]["latitude"]
+    datesBegin = body["dates"]["begin"]
+    datesEnd = body["dates"]["end"]
+    tags = body["tags"]
+
     try:
         table.put_item(
             Item={
-                'id': str(acteventID), 
-                'name': acteventName,
-                'longitude': acteventLongitude,
-                'latitude': acteventLatitude
+                "id": str(id), 
+                "name": name,
+                "description": description,
+                "price": price,
+                "location": {
+                    "longitude": locLatitude,
+                    "latitude": locLongitude
+                },
+                "dates": {
+                    "begin": datesBegin,
+                    "end": datesEnd
+                },
+                "tags": tags
+
             }
         )
 
         return {
-            'statusCode': 200,
-            'headers': {
-                'Access-Control-Allow-Origin': '*'
+            "statusCode": 200,
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
             },
-            'body': json.dumps('Successfully created event!')
+            "body": json.dumps("Successfully created event!")
         }
     except:
-        print('Closing lambda function')
+        print("Closing lambda function")
         return {
-            'statusCode': 400,
-            'headers': {
-                'Access-Control-Allow-Origin': '*'
+            "statusCode": 400,
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
             },
-            'body': json.dumps('Error saving the event')
+            "body": json.dumps("Error saving the event")
         }
