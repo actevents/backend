@@ -13,6 +13,8 @@ def lambda_handler(event, context):
     id = uuid.uuid4()
     name = body["name"]
     description = body["description"]
+    user = event["requestContext"]["authorizer"]["claims"]
+    organiser = user["email"]
     price = body["price"]
     locLatitude = body["location"]["longitude"]
     locLongitude = body["location"]["latitude"]
@@ -26,6 +28,7 @@ def lambda_handler(event, context):
                 "id": str(id), 
                 "name": name,
                 "description": description,
+                "organizer": organiser,
                 "price": price,
                 "location": {
                     "longitude": locLatitude,
