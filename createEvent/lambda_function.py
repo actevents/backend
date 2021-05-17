@@ -14,7 +14,7 @@ def lambda_handler(event, context):
     name = body["name"]
     description = body["description"]
     user = event["requestContext"]["authorizer"]["claims"]
-    organiser = user["email"]
+    organizer = user["email"]
     price = body["price"]
     locLatitude = body["location"]["longitude"]
     locLongitude = body["location"]["latitude"]
@@ -28,7 +28,7 @@ def lambda_handler(event, context):
                 "id": str(id), 
                 "name": name,
                 "description": description,
-                "organizer": organiser,
+                "organizer": organizer,
                 "price": price,
                 "location": {
                     "longitude": locLatitude,
@@ -42,7 +42,6 @@ def lambda_handler(event, context):
 
             }
         )
-
         return {
             "statusCode": 200,
             "headers": {
@@ -50,12 +49,12 @@ def lambda_handler(event, context):
             },
             "body": json.dumps("Successfully created event!")
         }
-    except:
+    except Exception as inst:
         print("Closing lambda function")
         return {
             "statusCode": 400,
             "headers": {
                 "Access-Control-Allow-Origin": "*"
             },
-            "body": json.dumps("Error saving the event")
+            "body": json.dumps("Error saving the event\n\n" + str(type(inst)) + "\n\n" + str(inst.args))
         }
