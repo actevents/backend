@@ -6,7 +6,7 @@ from math import cos, asin, sqrt, pi
 def lambda_handler(event, context):
     #get parameters out of pathParameters
     parameters = event["pathParameters"]
-
+    s3_url= "https://acteventsimages.s3.eu-central-1.amazonaws.com/"
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.Table("Events")
     #try to get id of parameters
@@ -22,11 +22,11 @@ def lambda_handler(event, context):
         }
     #try to get location
     try:
-        parameters = event["queryStringParameters"]
-        lon = float(parameters["longitude"])
-        lat = float(parameters["latitude"])
+        params = event["queryStringParameters"]
+        lon = float(params["longitude"])
+        lat = float(params["latitude"])
         hasLocation = True
-    except KeyError:
+    except:
         hasLocation = False
         print("no location given")
     #try to get item
@@ -45,6 +45,20 @@ def lambda_handler(event, context):
                     },
                     "body": json.dumps("Error calculating the distance\n\n" + str(type(inst)) + "\n\n" + str(inst.args))
                 }
+        try:
+            fileName = item["image"]
+            if fileName:
+                item.update({"s3BucketUrl": s3_url + fileName})
+                
+        except Exception as inst:
+            return {
+                    "statusCode": 400,
+                    "headers": {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    "body": json.dumps("Error getting the image\n\n" + str(type(inst)) + "\n\n" + str(inst.args))
+                }
+            
         return {
             "statusCode": 200,
             "headers": {
