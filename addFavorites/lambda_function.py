@@ -11,8 +11,10 @@ def lambda_handler(event, context):
     userId = user["email"]
     favorites = list()
     try:
-        parameter = event["queryStringParameters"]
-        newFavorite = parameter["favorite"]
+        #get body out of event
+        bodyStr = event["body"]
+        body = json.loads(bodyStr)
+        newFavorite = body["favorite"]
     except Exception as ex:
         return {
             "statusCode": 400,
