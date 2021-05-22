@@ -21,10 +21,15 @@ def lambda_handler(event, context):
             'body': json.dumps(response["Item"])
         }
     else:
+        favorites = list()
+        item = {
+            "user": userId,
+            "favorites": favorites
+        }
         return {
-            "statusCode": 400,
+            "statusCode": 200,
             "headers": {
                 "Access-Control-Allow-Origin": "*"
             },
-            "body": json.dumps("Error: The user has no favorites")
+            "body": json.dumps(item)
         }
