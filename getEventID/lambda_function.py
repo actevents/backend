@@ -39,7 +39,7 @@ def lambda_handler(event, context):
                 item.update({"distance": distance})
             except Exception as inst:
                 return {
-                    "statusCode": 400,
+                    "statusCode": 500,
                     "headers": {
                         "Access-Control-Allow-Origin": "*"
                     },
@@ -52,7 +52,7 @@ def lambda_handler(event, context):
                 
         except Exception as inst:
             return {
-                    "statusCode": 400,
+                    "statusCode": 404,
                     "headers": {
                         "Access-Control-Allow-Origin": "*"
                     },
@@ -68,11 +68,11 @@ def lambda_handler(event, context):
         }
     except Exception as ex:
         return {
-            "statusCode": 400,
+            "statusCode": 500,
             "headers": {
                 "Access-Control-Allow-Origin": "*"
             },
-            "body": json.dumps("Error: Error getting events by id\n" + str(type(ex)) + "\n\n" + str(ex.args))
+            "body": json.dumps("Error: Error getting any event by this id\n" + str(type(ex)) + "\n\n" + str(ex.args))
         }
 
 def getDistance(lat1, lon1, lat2, lon2):
