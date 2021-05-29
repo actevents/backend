@@ -38,7 +38,7 @@ def lambda_handler(event, context):
         item = response["Item"]
         if not item["organizer"] == email:
             return {
-                "statusCode": 400,
+                "statusCode": 403,
                 "headers": {
                     "Access-Control-Allow-Origin": "*"
                 },
@@ -55,7 +55,7 @@ def lambda_handler(event, context):
             }
     except Exception as ex:
         return {
-            "statusCode": 400,
+            "statusCode": 500,
             "headers": {
                 "Access-Control-Allow-Origin": "*"
             },
