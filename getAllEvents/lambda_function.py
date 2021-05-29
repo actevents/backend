@@ -1,6 +1,7 @@
 from math import cos, asin, sqrt, pi
 import json
 import boto3
+import datetime
 
 #getAllEvents
 def lambda_handler(event, context):
@@ -41,7 +42,9 @@ def lambda_handler(event, context):
                 distance = getDistance(lat,lon,float(item["latitude"]),float(item["longitude"]))
             item.update({"distance": distance})
             if(distance<=radius):
-                items.append(item)
+                datesEndObj = datetime.datetime.strptime(item["dates"]["end"], "%Y-%m-%dT%H:%M:%S.%fZ")
+                if datetime.datetime.today() < datesEndObj:
+                    items.append(item)
         
         items.sort(key=sortFunc)
         return {
