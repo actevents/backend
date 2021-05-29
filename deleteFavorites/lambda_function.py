@@ -45,7 +45,7 @@ def lambda_handler(event, context):
             }
         else:
             return {
-               "statusCode": 400,
+               "statusCode": 404,
                "headers": {
                    "Access-Control-Allow-Origin": "*"
                },
@@ -53,9 +53,9 @@ def lambda_handler(event, context):
             }
     except Exception as ex:
         return {
-            "statusCode": 400,
+            "statusCode": 500,
             "headers": {
                 "Access-Control-Allow-Origin": "*"
             },
-            "body": json.dumps("Error: Could not delte favorite from the user\n" + str(type(ex)) + "\n\n" + str(ex.args))
+            "body": json.dumps("Error: Could not delete favorite from the user\n" + str(type(ex)) + "\n\n" + str(ex.args))
         }
