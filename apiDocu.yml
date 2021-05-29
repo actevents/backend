@@ -1,0 +1,321 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Event-API
+  description: API for Actevent
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/i18035/Event-API/1.0.0
+tags:
+  - name: events
+    description: Everything about events
+  - name: favorites
+    description: Spezialoperations about favorites
+  - name: images
+    description: Spezialoperations for uploading images
+paths:
+    /events:
+      get:
+        tags:
+          - events
+        summary: Return all events in the search radius
+        parameters:
+          - name: latitude
+            in: query
+            description: Latitude of location
+            required: true
+            schema:
+              type: string
+              example: 48.6268480328219
+          - name: longitude
+            in: query
+            description: Longitude of location
+            required: true
+            schema:
+              type: string
+              example: 9.335079130580874
+          - name: radius
+            in: query
+            description: Search radius (as the crow flies) [km]
+            required: false
+            schema:
+              type: string
+              example: 30
+              default: 15
+        responses:
+          "200":
+            description: Events that are in the search radius starting from the specific location
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Event"
+          "400":
+            description: Could not get parameters
+          "500":
+            description: Could not get events from db in the given radius
+      post:
+        tags:
+          - events
+        summary: Create new event
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: Irgendnen Event
+                  description:
+                    type: string
+                    example: Ja hab doch keine Ahnung, was ich mir jetzt fürn Testevent schon wieder ausdenken soll
+                  organizer:
+                    type: string
+                    example: test@test.de
+                  price:
+                    type: string
+                    example: 0.00
+                  location:
+                    type: object
+                    properties:
+                      latitude:
+                        type: string
+                        example: 48.6268480328219
+                      longitude:
+                        type: string
+                        example: 9.335079130580874
+                  dates:
+                    type: object
+                    properties:
+                      begin:
+                        type: string
+                        example: "2021-06-27T10:06:00.000Z"
+                      end:
+                        type: string
+                        example: "2021-06-27T13:06:00.000Z"
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                      example: Rock&Pop
+                  image:
+                    type: string
+                    example: 888bf2a7-53ee-4bc2-969a-872c851431f4
+        responses:
+          "200":
+            description: Event created successfully
+          "400":
+            description: Could not get parameters
+          "406":
+            description: End date is not after begin date
+          "500":
+            description: Could not save the event
+    
+    /events/me:
+      get:
+        tags:
+          - events
+        summary: Return all events from the user
+        responses:
+          "200":
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Event"
+          "400":
+            description: Could not get user
+          "500":
+            description: Could not get events from the db with the given user as ogranizer
+    
+    '/events/{id}':
+      get:
+        tags:
+          - events
+        summary: Find event by id
+        description: Returns a single event
+        parameters:
+          - name: id
+            in: path
+            description: Id of the event
+            required: true
+            schema:
+              type: string
+              example: 888bf2a7-53ee-4bc2-969a-872c851431f4
+        responses:
+          "200":
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Event"
+          "400":
+            description: Could not get id as parameter
+          "404":
+            description: Could not get the image of the event
+          "500":
+            description: Could not get any event from the db with this id
+      delete:
+        tags:
+          - events
+        summary: Delete an event
+        parameters:
+          - name: id
+            in: path
+            description: Id of the event
+            required: true
+            schema:
+              type: string
+              example: 888bf2a7-53ee-4bc2-969a-872c851431f4
+        responses:
+          "200":
+            description: Event is successfully deleted
+          "400":
+            description: Could not get id or user as parameter
+          "403":
+            description: Could not delete event because user of request is not the organiser of the event
+          "500":
+            description: Could not get any event from the db with this id
+  
+    /favorites:
+      get:
+        tags:
+          - favorites
+        summary: Return all saved favorites of the user
+        responses:
+          "200":
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Event"
+      post:
+        tags:
+          - favorites
+        summary: Add a new favorite
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  favorite:
+                    type: string
+                    example: 888bf2a7-53ee-4bc2-969a-872c851431f4 
+          description: Id of event
+          required: true
+        responses:
+          "200":
+            description: Successfull added new favorite
+          "400":
+            description: Could not get parameters
+          "500":
+            description: Could not update or create favorites for the user
+      delete:
+        tags:
+          - favorites
+        summary: Delete an event from favorites
+        parameters:
+          - name: favorite
+            in: query
+            description: Id of event that need to be deleted from the favorites
+            required: true
+            schema:
+              type: string
+              example: 888bf2a7-53ee-4bc2-969a-872c851431f4
+        responses:
+          "200":
+            description: Successfull deleted the favorite
+          "400":
+            description: Could not get parameters
+          "404":
+            description: The user has no favorites
+          "500":
+            description: Could not delete favorite from the user
+            
+    /events/upload:
+      get:
+        tags:
+          - images
+        summary: Create S3 Bucket to enable image upload
+        parameters:
+        - name: extension
+          in: query
+          description: Fileextension of image
+          required: true
+          schema:
+            type: string
+            enum:
+              - jpeg
+              - jpg
+              - png
+        responses:
+          "200":
+            description: Successfull created S3 Bucket for image
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    uploadUrl:
+                      type: string
+                      example: "N/A"
+                    fileName:
+                      type: string
+                      example: 888bf2a7-53ee-4bc2-969a-872c851431f4.png
+          "400":
+            description: Wrong extension given. Extension must be jpeg jpg jpe or png
+
+components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 888bf2a7-53ee-4bc2-969a-872c851431f4
+        name:
+          type: string
+          example: Irgendnen Event
+        description:
+          type: string
+          example: Ja hab doch keine Ahnung, was ich mir jetzt fürn Testevent schon wieder ausdenken soll
+        organizer:
+          type: string
+          example: test@test.de
+        price:
+          type: string
+          example: 0.00
+        location:
+          type: object
+          properties:
+            latitude:
+              type: string
+              example: 48.6268480328219
+            longitude:
+              type: string
+              example: 9.335079130580874
+        dates:
+          type: object
+          properties:
+            begin:
+              type: string
+              example: "2021-06-27T10:06:00.000Z"
+            end:
+              type: string
+              example: "2021-06-27T13:06:00.000Z"
+        tags:
+          type: array
+          items:
+            type: string
+            example: Rock&Pop
+        image:
+          type: string
+          example: 888bf2a7-53ee-4bc2-969a-872c851431f4
