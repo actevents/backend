@@ -38,7 +38,7 @@ def lambda_handler(event, context):
         }
     except Exception as inst:
         return {
-            "statusCode": 400,
+            "statusCode": 500,
             "headers": {
                 "Access-Control-Allow-Origin": "*"
             },
