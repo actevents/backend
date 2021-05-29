@@ -19,13 +19,8 @@ def lambda_handler(event, context):
             try:
                 favorites.append(tableEvents.get_item(Key={"id":item})["Item"])
             except Exception as ex:
-                return {
-                    "statusCode": 400,
-                    "headers": {
-                        "Access-Control-Allow-Origin": "*"
-                    },
-                    "body": json.dumps("Error getting the favorites from the db\n\n" + str(type(ex)) + "\n\n" + str(ex.args))
-                }
+                #event is probably deleted or not in database
+                print(ex)
         return {
             'statusCode': 200,
             "headers": {
