@@ -43,7 +43,7 @@ def lambda_handler(event, context):
         datesEndObj = datetime.datetime.strptime(datesEnd, "%Y-%m-%dT%H:%M:%S.%fZ")
         if not datesEndObj > datesBeginObj:
             return {
-                "statusCode": 400,
+                "statusCode": 406,
                 "headers": {
                     "Access-Control-Allow-Origin": "*"
                 },
@@ -71,7 +71,7 @@ def lambda_handler(event, context):
     except Exception as inst:
         print("Closing lambda function")
         return {
-            "statusCode": 400,
+            "statusCode": 500,
             "headers": {
                 "Access-Control-Allow-Origin": "*"
             },
