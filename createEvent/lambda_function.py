@@ -43,7 +43,7 @@ def lambda_handler(event, context):
         datesEndObj = datetime.datetime.strptime(datesEnd, "%Y-%m-%dT%H:%M:%S.%fZ")
         if not datesEndObj > datesBeginObj:
             return {
-                "statusCode": 406,
+                "statusCode": 400,
                 "headers": {
                     "Access-Control-Allow-Origin": "*"
                 },
